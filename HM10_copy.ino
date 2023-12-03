@@ -85,10 +85,10 @@ void loop() {
 
     //Serial.print("Button value: ");
     //Serial.println(buttonValue);
-    //Serial.print("Throttle value: ");
-    //Serial.println(throttleValue);
-    //Serial.print("Steering value: ");
-    //Serial.println(steeringValue);
+    Serial.print("Throttle value: ");
+    Serial.println(throttleValue);
+    Serial.print("Steering value: ");
+    Serial.println(steeringValue);
     //Serial.print("Slider value: ");
     //Serial.println(sliderValue);
     //delay(250);
@@ -112,7 +112,7 @@ void loop() {
     } else if (buttonValue == 30) { // Button pour sélectionner un Haricot Rouge
           Serial.println("Button 30 pressed");
    
-          analogWrite(pinA,70); //ALLER
+          analogWrite(pinA,75); //ALLER
           digitalWrite(motorpin1, LOW); 
           digitalWrite(motorpin2, HIGH);
           delay(330);
@@ -120,7 +120,7 @@ void loop() {
           analogWrite(pinA,70); //RETOUR
           digitalWrite(motorpin1, HIGH); 
           digitalWrite(motorpin2, LOW);
-          delay(265);
+          delay(325);
 
           digitalWrite(motorpin1, LOW); //CC
           digitalWrite(motorpin2, HIGH);
@@ -129,15 +129,15 @@ void loop() {
     } else if (buttonValue == 40) { //Button pour sélectionner un Haricot Blanc
           Serial.println("Button 40 pressed");
 
-          analogWrite(pinA,70); //ALLER
+          analogWrite(pinA,75); //ALLER
           digitalWrite(motorpin1, HIGH); 
           digitalWrite(motorpin2, LOW);
-          delay(340);
+          delay(360);
           
           analogWrite(pinA,70); //RETOUR
           digitalWrite(motorpin1, LOW); 
           digitalWrite(motorpin2, HIGH);
-          delay(215);
+          delay(240);
 
           digitalWrite(motorpin1, HIGH); //CC
           digitalWrite(motorpin2, LOW);
@@ -150,7 +150,7 @@ void loop() {
     float multiplier = 120/47;
     float pwmValueCW = multiplier*throttleValue - 22.76596 ;
         
-    analogWrite(pinMA,pwmValueCW);
+    analogWrite(pinMA,0.7*pwmValueCW);
     digitalWrite(motorpinMA1, HIGH);
     digitalWrite(motorpinMA2, LOW);
 
@@ -158,8 +158,8 @@ void loop() {
     digitalWrite(motorpinMB1, HIGH);
     digitalWrite(motorpinMB2, LOW);
 
-    if (steeringValue > 60 && steeringValue < 80) { //TOURNER À GAUCHE
-      float multiplier2 = -steeringValue/30 + 3;
+    if (steeringValue > 60 && steeringValue < 80) { //TOURNER À DROITE
+      float multiplier2 = 0.45;
       analogWrite(pinMB,multiplier2 * pwmValueCW);
       digitalWrite(motorpinMB1, HIGH); 
       digitalWrite(motorpinMB2, LOW);
@@ -168,28 +168,18 @@ void loop() {
       digitalWrite(motorpinMA1, HIGH); 
       digitalWrite(motorpinMA2, LOW);
  
-    } else if (steeringValue >= 80) { // TOURNER À GAUCHE
-      float multiplier2 = 0;
+    } else if (steeringValue >= 80) { // TOURNER À DROITE
+      float multiplier2 = 1;
       analogWrite(pinMB,multiplier2*pwmValueCW);
-      digitalWrite(motorpinMB1, HIGH); 
-      digitalWrite(motorpinMB2, LOW);
+      digitalWrite(motorpinMB1, LOW); 
+      digitalWrite(motorpinMB2, HIGH);
 
       analogWrite(pinMA,pwmValueCW);
       digitalWrite(motorpinMA1, HIGH); 
       digitalWrite(motorpinMA2, LOW);
     }
-    else if (steeringValue < 40 && steeringValue > 20 ) { // TOURNER À DROITE
-      float multiplier2 = steeringValue/40 - (1/9);
-      analogWrite(pinMB,pwmValueCW);
-      digitalWrite(motorpinMB1, HIGH); 
-      digitalWrite(motorpinMB2, LOW);
-
-      analogWrite(pinMA,0.75*multiplier2*pwmValueCW);
-      digitalWrite(motorpinMA1, HIGH); 
-      digitalWrite(motorpinMA2, LOW);
-      
-    } else if (steeringValue <= 20) { // TOURNER À DROITE
-      float multiplier2 = 0;
+    else if (steeringValue < 40 && steeringValue > 20 ) { // TOURNER À GAUCHE
+      float multiplier2 = 0.6;
       analogWrite(pinMB,pwmValueCW);
       digitalWrite(motorpinMB1, HIGH); 
       digitalWrite(motorpinMB2, LOW);
@@ -197,6 +187,16 @@ void loop() {
       analogWrite(pinMA,multiplier2*pwmValueCW);
       digitalWrite(motorpinMA1, HIGH); 
       digitalWrite(motorpinMA2, LOW);
+      
+    } else if (steeringValue <= 20) { // TOURNER À GAUCHE
+      float multiplier2 = 1;
+      analogWrite(pinMB,pwmValueCW);
+      digitalWrite(motorpinMB1, HIGH); 
+      digitalWrite(motorpinMB2, LOW);
+
+      analogWrite(pinMA,multiplier2 * pwmValueCW);
+      digitalWrite(motorpinMA1, LOW); 
+      digitalWrite(motorpinMA2, HIGH);
     }
     else {
       analogWrite(pinMA,pwmValueCW);
@@ -209,10 +209,10 @@ void loop() {
     }
 //--------------------------------------------------------------------------------------------------
 // RECULER
-  } else if (throttleValue < 47) { 
+  } else if (throttleValue < 30) { 
     // Motor control code when throttleValue is under 45
     // For CounterClockWise motor
-    float multiplier = -105/45 ;//can be change
+    float multiplier = -105/40 ;//can be change
     int pwmValueCCW = multiplier*throttleValue + 255;
 
     //analogWrite(pinA,pwmValueCCW);
